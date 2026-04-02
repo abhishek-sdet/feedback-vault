@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '../../../lib/db.cjs';
-
-const DASHBOARD_SECRET = process.env.DASHBOARD_SECRET || 'kapil-dev-access-key-2024';
+import { decrypt } from '../../../lib/crypto';
 
 function isAuthorized(request) {
   const db = getDb();
@@ -11,19 +10,33 @@ function isAuthorized(request) {
   return request.headers.get('Authorization') === secret;
 }
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 // GET: Fetch all submissions (protected)
 export async function GET(request) {
   if (!isAuthorized(request)) {
+    // Brute-force protection: slow down failed attempts
+    await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
+
   try {
     const db = getDb();
-    const submissions = db
+    const rows = db
       .prepare(
         `SELECT id, type, content, status, created_at, employee_name, is_anonymous, employee_email, employee_phone, image_url, video_url, file_url
          FROM Submission ORDER BY created_at DESC`
       )
       .all();
+    
+    // Decrypt sensitive fields for the dashboard
+    const submissions = rows.map(row => ({
+      ...row,
+      employee_name: row.is_anonymous ? null : decrypt(row.employee_name),
+      employee_email: row.is_anonymous ? null : decrypt(row.employee_email),
+      employee_phone: row.is_anonymous ? null : decrypt(row.employee_phone),
+    }));
+
     return NextResponse.json(submissions);
   } catch (error) {
     console.error('Fetch error:', error);
@@ -34,6 +47,7 @@ export async function GET(request) {
 // PATCH: Update status (protected)
 export async function PATCH(request) {
   if (!isAuthorized(request)) {
+    await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
   try {
@@ -50,6 +64,7 @@ export async function PATCH(request) {
 // DELETE: Remove submission (protected)
 export async function DELETE(request) {
   if (!isAuthorized(request)) {
+    await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
   try {

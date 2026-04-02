@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Shield, Tag, User, Image as ImageIcon, Film, FileText, Download } from "lucide-react";
+import { X, Calendar, Shield, Tag, User, Image as ImageIcon, Film, FileText, Download, Mail, Phone } from "lucide-react";
 
 export default function MessageDetail({ message, onClose }) {
   if (!message) return null;
+
+  const authKey = typeof window !== 'undefined' ? (localStorage.getItem('vault_auth_key') || '') : '';
 
   return (
     <AnimatePresence>
@@ -86,12 +88,20 @@ export default function MessageDetail({ message, onClose }) {
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 text-black/40">
                         <ImageIcon size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Image Evidence</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Secure Image Payload</span>
                       </div>
                       <div className="group relative rounded-sm overflow-hidden border border-black/5 bg-black/[0.02]">
-                        <img src={message.image_url} alt="Attached Evidence" className="w-full h-auto object-cover max-h-64" />
-                        <a href={message.image_url} download className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2 text-[10px] font-bold uppercase tracking-widest">
-                          <Download size={16} /> Download
+                        <img 
+                          src={`/api/dashboard/media/${message.image_url}?key=${encodeURIComponent(authKey)}`} 
+                          alt="Attached Evidence" 
+                          className="w-full h-auto object-cover max-h-64" 
+                        />
+                        <a 
+                          href={`/api/dashboard/media/${message.image_url}?key=${encodeURIComponent(authKey)}`} 
+                          download 
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2 text-[10px] font-bold uppercase tracking-widest"
+                        >
+                          <Download size={16} /> Secure Download
                         </a>
                       </div>
                     </div>
@@ -102,11 +112,11 @@ export default function MessageDetail({ message, onClose }) {
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 text-black/40">
                         <Film size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Video Testimony</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Secure Video Payload</span>
                       </div>
                       <div className="rounded-sm overflow-hidden border border-black/5 bg-black">
                         <video controls className="w-full h-auto max-h-64">
-                          <source src={message.video_url} />
+                          <source src={`/api/dashboard/media/${message.video_url}?key=${encodeURIComponent(authKey)}`} />
                         </video>
                       </div>
                     </div>
@@ -117,10 +127,10 @@ export default function MessageDetail({ message, onClose }) {
                     <div className="space-y-4 col-span-full">
                       <div className="flex items-center gap-2 text-black/40">
                         <FileText size={14} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Digital Payload</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Secure Document Index</span>
                       </div>
                       <a 
-                        href={message.file_url} 
+                        href={`/api/dashboard/media/${message.file_url}?key=${encodeURIComponent(authKey)}`} 
                         download
                         className="flex items-center justify-between p-6 rounded-sm border border-black/5 bg-black/[0.02] hover:bg-black/5 transition-colors"
                       >
@@ -129,8 +139,8 @@ export default function MessageDetail({ message, onClose }) {
                             <FileText size={20} className="text-black/40" />
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-black/60 uppercase tracking-widest">Attachment File</p>
-                            <p className="text-[9px] text-black/20 font-black tracking-widest uppercase">Encrypted Archive</p>
+                            <p className="text-[11px] font-bold text-black/60 uppercase tracking-widest">Archived Payload</p>
+                            <p className="text-[9px] text-black/20 font-black tracking-widest uppercase">Encrypted Binary</p>
                           </div>
                         </div>
                         <Download size={18} className="text-black/20" />
