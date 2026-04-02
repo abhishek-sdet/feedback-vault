@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Submission {
+  id         String   @id @default(uuid())
+  type       String   // 'GRIEVANCE' or 'SUGGESTION'
+  content    String
+  status     String   @default("UNREAD") // 'UNREAD', 'READ'
+  created_at DateTime @default(now())
+}
+
+model Registry {
+  key   String @id
+  value String
+}
