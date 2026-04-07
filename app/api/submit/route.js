@@ -44,6 +44,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 });
     }
 
+    // --- Basic Sovereign Sanitization ---
+    const sanitizedContent = content.trim()
+      .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gmi, "[REMOVED_SCRIPT]")
+      .replace(/<[^>]*>?/gm, ''); // Strip all other HTML tags
+
     // --- Hardened Encryption ---
     const employeeName = isAnonymous ? null : encrypt(rawName);
     const employeeEmail = isAnonymous ? null : encrypt(rawEmail);
@@ -101,7 +106,7 @@ export async function POST(request) {
     db.prepare(
       `INSERT INTO Submission (id, type, content, status, created_at, employee_name, is_anonymous, employee_email, employee_phone, image_url, video_url, file_url)
        VALUES (?, ?, ?, 'UNREAD', datetime('now'), ?, ?, ?, ?, ?, ?, ?)`
-    ).run(id, type, content.trim(), employeeName, isAnonymous, employeeEmail, employeePhone, imageUrl, videoUrl, fileUrl);
+    ).run(id, type, sanitizedContent, employeeName, isAnonymous, employeeEmail, employeePhone, imageUrl, videoUrl, fileUrl);
 
     return NextResponse.json({ success: true, message: 'Message securely moved to the vault' }, { status: 201 });
   } catch (error) {

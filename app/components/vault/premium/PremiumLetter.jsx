@@ -82,16 +82,27 @@ export default function PremiumLetter({
           <InkDissolve trigger={isDissolving} />
 
           {/* Letter header */}
-          <div className="flex justify-between items-start mb-8">
-            <div className="flex flex-col gap-2">
-              <img src="/sdet-logo.png" alt="SDET" className="h-5 w-auto mb-2 object-contain opacity-70" />
-              <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: 'rgba(45,36,22,0.7)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 900 }}>
-                PERSONAL & CONFIDENTIAL: TO KAPIL
-              </p>
+          <div className="flex justify-between items-start mb-12 border-b border-black/[0.03] pb-8">
+            <div className="flex flex-col gap-4">
+              <div className="h-10 w-24 relative overflow-hidden bg-white/5 rounded p-1 border border-black/5 opacity-50">
+                <img src="/sdet-logo.png" alt="SDET" className="h-full w-full object-contain" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[12px] font-black tracking-[0.2em] uppercase text-black/60 font-sans">
+                  Personal & Confidential
+                </h4>
+                <p className="text-[10px] tracking-[0.3em] uppercase text-black/30 font-bold">
+                  Directly to my desk
+                </p>
+              </div>
             </div>
-            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: 'rgba(45,36,22,0.5)', fontWeight: 600 }}>
-              {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-            </p>
+            
+            <div className="text-right">
+              <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, color: 'rgba(45,36,22,0.6)', fontWeight: 600, fontStyle: 'italic' }}>
+                {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </p>
+              <div className="w-12 h-0.5 bg-black/[0.05] ml-auto mt-2 rounded-full" />
+            </div>
           </div>
 
           {/* Writing area */}
@@ -140,7 +151,7 @@ export default function PremiumLetter({
                       </div>
                       <div className="flex flex-col items-start">
                         <span className="text-[10px] uppercase font-black tracking-[0.2em] text-black/50 group-hover:text-black/80 transition-colors flex items-center gap-1.5">
-                          Stay Anonymous
+                          Choose Anonymous Mode
                         </span>
                         {isAnonymous && (
                           <motion.span 
@@ -258,13 +269,10 @@ export default function PremiumLetter({
             : 'text-slate-600 border-white/10 cursor-not-allowed'
         }`}
       >
-        Seal & Send Record
+        Speak Freely & Send
       </motion.button>
 
-      <p className="text-[10px] text-slate-500 font-medium tracking-[0.2em] uppercase flex items-center gap-2">
-        <ShieldCheck size={12} className="text-emerald-500" />
-        Kapil's Personal Assurance: This encrypted record is for my eyes only. Your identity remains your choice.
-      </p>
+        My Personal Promise: I will never track your identity. This is our safe space.
     </motion.div>
   );
 }

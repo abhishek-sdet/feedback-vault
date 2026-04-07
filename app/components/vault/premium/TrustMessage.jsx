@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const LINES = [
-  'I am listening. Your words come directly to me.',
-  'This is our encrypted channel. Your safety is my personal promise.',
+  'I value your thoughts. Every word you share here...',
+  '...comes directly to my desk. I am listening.',
 ];
 
 export default function TrustMessage(props) {
@@ -58,11 +58,12 @@ export default function TrustMessage(props) {
       className="flex flex-col items-center gap-3 text-center px-6"
     >
       <p
-        className="text-[17px] leading-relaxed tracking-wide"
+        className="text-[28px] md:text-[36px] leading-tight tracking-tight font-serif"
         style={{
           fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'rgba(255,250,240,0.72)',
+          color: 'rgba(255,250,240,0.92)',
           minHeight: '1.6em',
+          fontWeight: 400,
         }}
       >
         {line1}
@@ -77,11 +78,10 @@ export default function TrustMessage(props) {
 
       {phase >= 1 && (
         <p
-          className="text-[14px] leading-relaxed tracking-widest uppercase"
+          className="text-[16px] md:text-[18px] leading-relaxed tracking-[0.3em] uppercase font-bold"
           style={{
             fontFamily: "'Inter', sans-serif",
-            color: 'rgba(255,250,240,0.35)',
-            letterSpacing: '0.14em',
+            color: 'rgba(255,250,240,0.45)',
             minHeight: '1.4em',
           }}
         >

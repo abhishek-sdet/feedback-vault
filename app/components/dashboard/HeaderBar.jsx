@@ -50,11 +50,11 @@ export default function HeaderBar({ onLogout, onSettings }) {
         <div className="flex items-center gap-2.5 bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
           <motion.div
             className="w-1.5 h-1.5 bg-emerald-400 rounded-full"
-            animate={{ opacity: [1, 0.4, 1] }}
+            animate={{ scale: [1, 1.4, 1], opacity: [1, 0.4, 1] }}
             transition={{ repeat: Infinity, duration: 2 }}
           />
           <span className="text-[10px] tracking-[0.15em] font-black text-emerald-400 uppercase">
-            SECURE
+            LIVE SYNC
           </span>
         </div>
       </div>

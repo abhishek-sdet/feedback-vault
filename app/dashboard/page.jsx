@@ -85,23 +85,38 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [newAlert, setNewAlert] = useState(null); // { id, type }
+  const [lastId, setLastId] = useState(null);
 
-  const fetchData = useCallback(async (key) => {
+  const fetchData = useCallback(async (key, isSilent = false) => {
     if (!key) return;
-    setLoading(true);
+    if (!isSilent) setLoading(true);
     try {
       const res = await fetch('/api/dashboard', { headers: { Authorization: key } });
-      if (res.ok) setData(await res.json());
-      else if (res.status === 401) {
+      if (res.ok) {
+        const json = await res.json();
+        
+        // --- New Message Detection ---
+        if (json.length > 0) {
+          const firstId = json[0].id;
+          if (lastId && firstId !== lastId) {
+            // New record arrived!
+            setNewAlert(json[0]);
+          }
+          setLastId(firstId);
+        }
+        setData(json);
+
+      } else if (res.status === 401) {
         localStorage.removeItem('vault_auth_key');
         setAuthKey(null);
       }
     } catch {
-      // Silence connection errors
+      // Silence background connection errors
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
-  }, []);
+  }, [lastId]);
 
   const updateEntry = async (id, status) => {
     const res = await fetch('/api/dashboard', { 
@@ -113,7 +128,7 @@ export default function DashboardPage() {
       localStorage.removeItem('vault_auth_key');
       setAuthKey(null);
     } else {
-      fetchData(authKey);
+      fetchData(authKey, true); // Silent refresh
     }
   };
 
@@ -127,7 +142,7 @@ export default function DashboardPage() {
       localStorage.removeItem('vault_auth_key');
       setAuthKey(null);
     } else {
-      fetchData(authKey);
+      fetchData(authKey, true); // Silent refresh
     }
   };
 
@@ -141,13 +156,23 @@ export default function DashboardPage() {
     setAuthKey(newKey);
   };
 
+  // Initial Load
   useEffect(() => {
     const saved = localStorage.getItem('vault_auth_key');
     if (saved) {
       setAuthKey(saved);
       fetchData(saved);
     }
-  }, [fetchData]);
+  }, []);
+
+  // Background Polling (10s sync)
+  useEffect(() => {
+    if (!authKey) return;
+    const interval = setInterval(() => {
+      fetchData(authKey, true);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [authKey, fetchData]);
 
   const handleUnlock = (key) => {
     setAuthKey(key);
@@ -164,6 +189,41 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-white px-8 md:px-16 py-12 selection:bg-emerald-500/20">
+      
+      {/* --- Point: Interactive Notifications --- */}
+      <AnimatePresence>
+        {newAlert && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -20, x: '-50%' }}
+            className="fixed top-8 left-1/2 z-[100] w-full max-w-md px-6 pointer-events-auto cursor-pointer"
+            onClick={() => {
+              setSelected(newAlert);
+              setNewAlert(null);
+            }}
+          >
+            <div className="bg-white/5 border border-emerald-500/30 backdrop-blur-3xl p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between group overflow-hidden">
+               {/* Pulse bg */}
+               <div className="absolute inset-0 bg-emerald-500/[0.03] animate-pulse" />
+               
+               <div className="relative z-10 flex items-center gap-4">
+                 <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
+                    <RefreshCcw className="w-5 h-5 text-emerald-400 animate-spin-slow" />
+                 </div>
+                 <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">New Record Detected</h4>
+                    <p className="text-xs text-white/70 font-medium">A new payload just arrived in the vault.</p>
+                 </div>
+               </div>
+
+               <div className="relative z-10 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-lg group-hover:bg-emerald-500/30 transition-colors">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">View Record</span>
+               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <HeaderBar 
         onLogout={handleLogout} 

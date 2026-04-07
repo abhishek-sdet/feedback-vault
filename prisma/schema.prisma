@@ -11,11 +11,20 @@ datasource db {
 }
 
 model Submission {
-  id         String   @id @default(uuid())
-  type       String   // 'GRIEVANCE' or 'SUGGESTION'
-  content    String
-  status     String   @default("UNREAD") // 'UNREAD', 'READ'
-  created_at DateTime @default(now())
+  id          String   @id @default(uuid())
+  feedbackId  String   @unique                  // Human-readable ID (e.g., EV-2381)
+  category    String                            // Suggestion, Question, Concern, Ethics, Appreciation
+  content     String
+  isAnonymous Boolean  @default(true)
+  senderName  String?                           // Optional if not anonymous
+  department  String?
+  location    String?
+  urgency     String?  @default("NORMAL")       // NORMAL, URGENT, CRITICAL
+  status      String   @default("RECEIVED")     // RECEIVED, UNDER_REVIEW, ACTION_TAKEN, CLOSED
+  response    String?                           // Internal or public response
+  impact      String?                           // Summary for "You Said - We Did"
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 }
 
 model Registry {

@@ -17,7 +17,7 @@ export default function TypingArea(props) {
         value={value}
         onChange={handleChange}
         disabled={disabled}
-        placeholder="Share your Suggestion, Feedback, Grievances, or a new Idea directly with Kapil…"
+        placeholder="Tell us what happened or what you would like to suggest..."
         maxLength={2000}
         autoFocus
         className="ink-textarea ruled-paper w-full h-full bg-transparent resize-none border-none focus:outline-none focus:ring-0"
