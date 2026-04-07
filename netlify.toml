@@ -2,9 +2,11 @@
   command = "npm run build"
   publish = ".next"
 
+[build.environment]
+  NODE_VERSION = "20"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [functions]
-  node_version = "20"
-  external_node_modules = ["better-sqlite3"]
+  external_node_modules = ["better-sqlite3", "pg"]
