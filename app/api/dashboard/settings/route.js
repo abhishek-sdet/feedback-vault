@@ -1,31 +1,30 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '../../../../lib/db.cjs';
+import { getDb } from '@/lib/db.cjs';
 
-function isAuthorized(request) {
-  const db = getDb();
-  const secret = db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get()?.value 
-                || process.env.DASHBOARD_SECRET 
-                || 'Sdet@2026';
+async function isAuthorized(request) {
+  const db = await getDb();
+  const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
+  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2024';
   return request.headers.get('Authorization') === secret;
 }
 
 // GET: Fetch current settings (protected)
 export async function GET(request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const db = getDb();
-  const secret = db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get()?.value;
+  const db = await getDb();
+  const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
   
   return NextResponse.json({ 
-    accessKey: secret || 'Sdet@2026'
+    accessKey: res?.value || 'Sdet@2024'
   });
 }
 
 // POST: Update settings (protected)
 export async function POST(request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -35,8 +34,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Key must be at least 4 characters.' }, { status: 400 });
     }
 
-    const db = getDb();
-    db.prepare("INSERT OR REPLACE INTO Registry (key, value) VALUES ('DASHBOARD_SECRET', ?)").run(newKey);
+    const db = await getDb();
+    await db.prepare("INSERT INTO Registry (key, value) VALUES ('DASHBOARD_SECRET', ?) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value").run(newKey);
     
     return NextResponse.json({ success: true });
   } catch (error) {

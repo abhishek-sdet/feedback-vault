@@ -2,11 +2,10 @@ import { NextResponse } from 'next/server';
 import { getDb } from '../../../lib/db.cjs';
 import { decrypt } from '../../../lib/crypto';
 
-function isAuthorized(request) {
-  const db = getDb();
-  const secret = db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get()?.value 
-                || process.env.DASHBOARD_SECRET 
-                || 'Sdet@2026';
+async function isAuthorized(request) {
+  const db = await getDb();
+  const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
+  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2026';
   return request.headers.get('Authorization') === secret;
 }
 
@@ -14,15 +13,15 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // GET: Fetch all submissions (protected)
 export async function GET(request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     // Brute-force protection: slow down failed attempts
     await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
 
   try {
-    const db = getDb();
-    const rows = db
+    const db = await getDb();
+    const rows = await db
       .prepare(
         `SELECT id, type, content, status, created_at, employee_name, is_anonymous, employee_email, employee_phone, image_url, video_url, file_url
          FROM Submission ORDER BY created_at DESC`
@@ -46,14 +45,14 @@ export async function GET(request) {
 
 // PATCH: Update status (protected)
 export async function PATCH(request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
   try {
     const { id, status } = await request.json();
-    const db = getDb();
-    db.prepare('UPDATE Submission SET status = ? WHERE id = ?').run(status, id);
+    const db = await getDb();
+    await db.prepare('UPDATE Submission SET status = ? WHERE id = ?').run(status, id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Update error:', error);
@@ -63,14 +62,14 @@ export async function PATCH(request) {
 
 // DELETE: Remove submission (protected)
 export async function DELETE(request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
   try {
     const { id } = await request.json();
-    const db = getDb();
-    db.prepare('DELETE FROM Submission WHERE id = ?').run(id);
+    const db = await getDb();
+    await db.prepare('DELETE FROM Submission WHERE id = ?').run(id);
     return NextResponse.json({ success: true, message: 'Entry permanently removed from vault' });
   } catch (error) {
     console.error('Delete error:', error);

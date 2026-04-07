@@ -38,5 +38,21 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Hide Scrollbars */
-::-webkit-scrollbar { display: none; }
+/* Custom Animations */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes pulse-emerald {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-emerald {
+  animation: pulse-emerald 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

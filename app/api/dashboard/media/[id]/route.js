@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '../../../../lib/db.cjs';
+import { getDb } from '@/lib/db.cjs';
 import fs from 'fs/promises';
 import path from 'path';
 
-function isAuthorized(request) {
-  const db = getDb();
-  const secret = db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get()?.value 
-                || process.env.DASHBOARD_SECRET 
-                || 'Sdet@2026';
+async function isAuthorized(request) {
+  const db = await getDb();
+  const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
+  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2024';
   return request.headers.get('Authorization') === secret;
 }
 
 export async function GET(request, { params }) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
 

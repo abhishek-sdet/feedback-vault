@@ -8,7 +8,7 @@ import StatsStrip from "../components/dashboard/StatsStrip";
 import MessageStream from "../components/dashboard/MessageStream";
 import MessageDetail from "../components/dashboard/MessageDetail";
 import SettingsModal from "../components/dashboard/SettingsModal";
-import { RefreshCcw, Unlock } from 'lucide-react';
+import { RefreshCcw, Unlock, X, Bell, Zap, Trash2 } from 'lucide-react';
 
 const C = {
   bg: '#0b0f19',
@@ -85,7 +85,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [newAlert, setNewAlert] = useState(null); // { id, type }
+  const [deleteAlert, setDeleteAlert] = useState(null); // { id, feedbackId }
+  const [lastSeenTime, setLastSeenTime] = useState(null);
   const [lastId, setLastId] = useState(null);
 
   const fetchData = useCallback(async (key, isSilent = false) => {
@@ -97,13 +98,17 @@ export default function DashboardPage() {
         const json = await res.json();
         
         // --- New Message Detection ---
+        // --- New Message Detection (Smart Timestamp Logic) ---
         if (json.length > 0) {
-          const firstId = json[0].id;
-          if (lastId && firstId !== lastId) {
-            // New record arrived!
-            setNewAlert(json[0]);
+          const first = json[0];
+          const firstTime = new Date(first.created_at).getTime();
+          
+          if (lastSeenTime && firstTime > lastSeenTime && first.id !== lastId) {
+            // New record arrived (tracking for other UI elements if needed)
           }
-          setLastId(firstId);
+          
+          setLastSeenTime(firstTime);
+          setLastId(first.id);
         }
         setData(json);
 
@@ -133,6 +138,10 @@ export default function DashboardPage() {
   };
 
   const deleteEntry = async (id) => {
+    // Find the readable record ID before wipe
+    const item = data.find(d => d.id === id);
+    const readableId = item?.feedbackId || "RECORD";
+
     const res = await fetch('/api/dashboard', { 
       method: 'DELETE', 
       headers: { Authorization: authKey, 'Content-Type': 'application/json' }, 
@@ -141,7 +150,9 @@ export default function DashboardPage() {
     if (res.status === 401) {
       localStorage.removeItem('vault_auth_key');
       setAuthKey(null);
-    } else {
+    } else if (res.ok) {
+      setDeleteAlert({ id: id, feedbackId: readableId });
+      setTimeout(() => setDeleteAlert(null), 5000);
       fetchData(authKey, true); // Silent refresh
     }
   };
@@ -190,44 +201,52 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#020617] text-white px-8 md:px-16 py-12 selection:bg-emerald-500/20">
       
-      {/* --- Point: Interactive Notifications --- */}
+      {/* --- Deletion Confirmation System --- */}
       <AnimatePresence>
-        {newAlert && (
+        {deleteAlert && (
           <motion.div
-            initial={{ opacity: 0, y: -20, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: -20, x: '-50%' }}
-            className="fixed top-8 left-1/2 z-[100] w-full max-w-md px-6 pointer-events-auto cursor-pointer"
-            onClick={() => {
-              setSelected(newAlert);
-              setNewAlert(null);
-            }}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed bottom-12 right-12 z-[100] w-full max-w-sm pointer-events-auto"
           >
-            <div className="bg-white/5 border border-emerald-500/30 backdrop-blur-3xl p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between group overflow-hidden">
-               {/* Pulse bg */}
-               <div className="absolute inset-0 bg-emerald-500/[0.03] animate-pulse" />
+            <div className="bg-slate-950/80 border border-red-500/30 backdrop-blur-3xl p-6 rounded-2xl shadow-[0_20px_80px_rgba(239,68,68,0.2)] overflow-hidden relative">
+               <motion.div 
+                 className="absolute inset-x-0 top-0 h-[2px] bg-red-500"
+                 initial={{ width: '100%' }}
+                 animate={{ width: '0%' }}
+                 transition={{ duration: 5, ease: "linear" }}
+               />
                
-               <div className="relative z-10 flex items-center gap-4">
-                 <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-                    <RefreshCcw className="w-5 h-5 text-emerald-400 animate-spin-slow" />
-                 </div>
-                 <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">New Record Detected</h4>
-                    <p className="text-xs text-white/70 font-medium">A new payload just arrived in the vault.</p>
-                 </div>
-               </div>
-
-               <div className="relative z-10 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-lg group-hover:bg-emerald-500/30 transition-colors">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">View Record</span>
+               <div className="flex items-center gap-5">
+                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                    <Trash2 className="w-5 h-5 text-red-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-red-400 mb-1">Security Lockdown</h4>
+                    <p className="text-[13px] text-white/90 font-medium tracking-tight leading-snug">
+                      Vault entry <span className="text-red-400 font-bold">{deleteAlert.feedbackId}</span> has been wiped.
+                    </p>
+                    <p className="text-[9px] text-white/30 font-bold uppercase tracking-widest mt-2">Protocol: Secure Purge Complete</p>
+                  </div>
+                  <button 
+                    onClick={() => setDeleteAlert(null)}
+                    className="text-white/20 hover:text-white transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
                </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       <HeaderBar 
         onLogout={handleLogout} 
         onSettings={() => setIsSettingsOpen(true)}
+        unreadCount={stats.unread}
+        unreadItems={data.filter(d => d.status === 'UNREAD').slice(0, 8)}
+        onSelectMessage={setSelected}
       />
 
       <motion.div

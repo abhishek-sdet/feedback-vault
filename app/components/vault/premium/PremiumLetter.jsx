@@ -75,9 +75,9 @@ export default function PremiumLetter({
         }}
         transition={{ type: 'spring', stiffness: 120, damping: 18 }}
         style={{ perspective: 1000, transformStyle: 'preserve-3d' }}
-        className="paper-surface w-full max-w-[620px] rounded-sm relative overflow-hidden flex flex-col"
+        className="paper-surface w-full max-w-[min(620px,92vw)] rounded-sm relative overflow-hidden flex flex-col"
       >
-        <div className="p-10 md:p-14 relative z-10 flex-grow" style={{ minHeight: 450 }}>
+        <div className="p-6 sm:p-10 md:p-14 relative z-10 flex-grow" style={{ minHeight: 'clamp(350px, 60vh, 550px)' }}>
           {/* Ink Dissolve Overlay */}
           <InkDissolve trigger={isDissolving} />
 
@@ -106,7 +106,7 @@ export default function PremiumLetter({
           </div>
 
           {/* Writing area */}
-          <div style={{ height: 200, marginBottom: 40 }} role="textbox" aria-multiline="true" aria-label="Your Feedback Content">
+          <div style={{ minHeight: 180, marginBottom: 'clamp(20px, 5vh, 40px)' }} role="textbox" aria-multiline="true" aria-label="Your Feedback Content">
             {isDissolving ? (
               <CryptoDissolve text={text} trigger={true} />
             ) : (
@@ -120,7 +120,7 @@ export default function PremiumLetter({
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="pt-8 border-t border-black/5 space-y-8"
+                className="pt-6 md:pt-8 border-t border-black/5 space-y-6 md:space-y-8"
               >
                 {/* Identity Field */}
                 <div className="flex flex-col gap-6">

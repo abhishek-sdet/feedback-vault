@@ -27,7 +27,7 @@ export default function SuccessScreen({ onReset }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.8 }}
         style={{ fontFamily: "'Playfair Display', serif" }}
-        className="text-4xl md:text-6xl font-medium mb-8 text-white tracking-tight italic"
+        className="text-[clamp(1.75rem,8vw,3.75rem)] font-medium mb-8 text-white tracking-tight italic"
       >
         Thank you. <br/> Your voice is in my hands.
       </motion.h1>
@@ -40,7 +40,7 @@ export default function SuccessScreen({ onReset }) {
       >
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-slate-200 text-[16px] md:text-[20px] max-w-2xl font-light leading-relaxed tracking-[0.02em] opacity-80 italic"
+          className="text-slate-200 text-[clamp(0.95rem,2.5vw,1.25rem)] max-w-2xl font-light leading-relaxed tracking-[0.02em] opacity-80 italic"
         >
           "I personally review every entry in this vault. Your honesty is what 
           helps us build a better company together. Take pride in speaking up."
@@ -73,7 +73,7 @@ export default function SuccessScreen({ onReset }) {
         <button
           onClick={onReset}
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="group flex items-center gap-4 px-12 py-5 rounded-sm border border-white/10 bg-white/[0.04] text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white/[0.1] hover:border-white/40 transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)]"
+          className="group flex items-center gap-4 px-8 md:px-12 py-3.5 md:py-5 rounded-sm border border-white/10 bg-white/[0.04] text-[11px] md:text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white/[0.1] hover:border-white/40 transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)]"
         >
           <ChevronLeft 
             size={16} 

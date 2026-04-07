@@ -64,73 +64,59 @@ export default function PremiumEnvelope(props) {
         animate={{ y: [0, -6, 0] }}
         transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
         whileHover={{ scale: 1.02, y: -8 }}
-        className="relative cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-amber-200/20 rounded-sm shadow-2xl"
+        className="relative cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-amber-200/20 rounded-sm shadow-2xl w-[min(300px,85vw)] aspect-[3/2]"
         style={{
-          width: 300,
-          height: 200,
           filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.6))',
         }}
       >
         {/* Body - Interactive Light */}
         <div
-          className="absolute inset-0 rounded-sm transition-colors duration-500"
+          className="absolute inset-0 rounded-sm transition-colors duration-500 overflow-hidden"
           style={{ 
             background: isOpen 
               ? '#f2e8d0' 
               : `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, #f9f3e6 0%, #f2e8d0 60%)` 
           }}
-        />
+        >
+          {/* Left triangle fold - Liquid */}
+          <div
+            className="absolute inset-0 bg-[#e8dcc4]"
+            style={{ clipPath: 'polygon(0 0, 50% 50%, 0 100%)' }}
+          />
 
-        {/* Left triangle fold */}
-        <div
-          className="absolute bottom-0 left-0"
-          style={{
-            width: 0, height: 0,
-            borderBottom: '100px solid #e8dcc4',
-            borderRight: '150px solid transparent',
-          }}
-        />
+          {/* Right triangle fold - Liquid */}
+          <div
+            className="absolute inset-0 bg-[#e8dcc4]"
+            style={{ clipPath: 'polygon(100% 0, 50% 50%, 100% 100%)' }}
+          />
 
-        {/* Right triangle fold */}
-        <div
-          className="absolute bottom-0 right-0"
-          style={{
-            width: 0, height: 0,
-            borderBottom: '100px solid #e8dcc4',
-            borderLeft: '150px solid transparent',
-          }}
-        />
+          {/* Bottom V flap - Liquid */}
+          <div
+            className="absolute inset-0"
+            style={{ 
+              clipPath: 'polygon(0 100%, 100% 100%, 50% 50%)',
+              background: '#ddd0b3'
+            }}
+          />
+        </div>
 
-        {/* Bottom V flap */}
-        <div
-          className="absolute top-1/2 left-0 right-0"
-          style={{
-            height: 0,
-            borderLeft: '150px solid #ddd0b3',
-            borderRight: '150px solid #ddd0b3',
-            borderBottom: '0px solid transparent',
-            borderTop: '60px solid transparent',
-          }}
-        />
-
-        {/* Top flap (animated) */}
+        {/* Top flap (animated) - Liquid */}
         <motion.div
-          className="absolute top-0 left-0 right-0 origin-top"
+          className="absolute top-0 left-0 right-0 h-full origin-top"
           animate={isOpen ? { rotateX: -180 } : { rotateX: 0 }}
           transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
           style={{ transformStyle: 'preserve-3d', zIndex: 10 }}
         >
           <div
+            className="w-full h-full"
             style={{
-              width: 0, height: 0,
-              borderLeft: '150px solid transparent',
-              borderRight: '150px solid transparent',
-              borderTop: '110px solid #e0d4b8',
+              clipPath: 'polygon(0 0, 100% 0, 50% 55%)',
+              background: '#e0d4b8'
             }}
           />
         </motion.div>
 
-        {/* Wax seal */}
+        {/* Wax seal - Liquid */}
         {!isOpen && (
           <motion.div
             initial={{ scale: 0 }}
@@ -138,12 +124,13 @@ export default function PremiumEnvelope(props) {
             transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center z-20"
             style={{
-              width: 40, height: 40,
+              width: '14%',
+              aspectRatio: '1/1',
               background: 'radial-gradient(circle at 35% 35%, #c0392b, #922b21)',
               boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
             }}
           >
-            <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 700, fontFamily: 'serif' }}>S</span>
+            <span className="text-[min(14px,4vw)]" style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, fontFamily: 'serif' }}>S</span>
           </motion.div>
         )}
       </motion.div>

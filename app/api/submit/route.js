@@ -99,11 +99,11 @@ export async function POST(request) {
       return 'FEEDBACK';
     };
 
-    const type = classifyFeedback(content);
-    const db = getDb();
+    const type = classifyFeedback(sanitizedContent);
+    const db = await getDb();
     const id = randomUUID();
 
-    db.prepare(
+    await db.prepare(
       `INSERT INTO Submission (id, type, content, status, created_at, employee_name, is_anonymous, employee_email, employee_phone, image_url, video_url, file_url)
        VALUES (?, ?, ?, 'UNREAD', datetime('now'), ?, ?, ?, ?, ?, ?, ?)`
     ).run(id, type, sanitizedContent, employeeName, isAnonymous, employeeEmail, employeePhone, imageUrl, videoUrl, fileUrl);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import PremiumEnvelope from './PremiumEnvelope';
 import TrustMessage from './TrustMessage';
@@ -106,7 +106,7 @@ export default function PremiumVault() {
   // --- Asset Accessibility: Focus Management ---
   useEffect(() => {
     if (phaseContainerRef.current) {
-      phaseContainerRef.current.focus();
+      phaseContainerRef.current.focus({ preventScroll: true });
     }
   }, [phase]);
 
@@ -120,7 +120,7 @@ export default function PremiumVault() {
   return (
     <div
       className={`relative min-h-screen flex flex-col items-center bg-[var(--background)] transition-all duration-1000 ${
-        (phase === 'success' || phase === 'trust') ? 'justify-center pt-0 overflow-hidden' : 'pt-12 pb-20 overflow-y-auto'
+        (phase === 'success' || phase === 'trust') ? 'justify-center pt-0 overflow-hidden' : 'justify-start pt-0 pb-20 overflow-y-auto'
       }`}
     >
       {/* Cinematic Film Grain */}
@@ -158,15 +158,14 @@ export default function PremiumVault() {
         ))}
       </div>
 
-      {/* Ambient background glow - Enhanced */}
       <div
-        className="absolute pointer-events-none"
+        className="absolute pointer-events-none opacity-[0.1]"
         aria-hidden="true"
         style={{
           top: '30%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 900, height: 700,
-          background: 'radial-gradient(ellipse, rgba(71,85,105,0.12) 0%, transparent 80%)',
+          width: 'min(900px, 150vw)', height: 'min(700px, 120vh)',
+          background: 'radial-gradient(ellipse, rgba(71,85,105,0.2) 0%, transparent 80%)',
         }}
       />
 
@@ -179,10 +178,10 @@ export default function PremiumVault() {
         role="navigation"
         aria-label="Primary Vault Navigation"
       >
-        <div className="flex items-center gap-4">
-          <img src="/sdet-logo.png" alt="SDET Official Logo" className="h-9 w-auto object-contain" />
-          <div className="h-4 w-px bg-white/20" aria-hidden="true" />
-          <span className="font-serif text-[15px] text-slate-200 tracking-widest font-medium uppercase">
+        <div className="flex items-center gap-3 md:gap-4 shrink-0">
+          <img src="/sdet-logo.png" alt="SDET Official Logo" className="h-7 md:h-9 w-auto object-contain" />
+          <div className="h-4 w-px bg-white/20 hidden sm:block" aria-hidden="true" />
+          <span className="font-serif text-[11px] md:text-[15px] text-slate-200 tracking-widest font-medium uppercase hidden sm:block">
             Open Channel: Your Voice to Kapil
           </span>
         </div>
@@ -206,7 +205,7 @@ export default function PremiumVault() {
       </div>
 
       {/* Main stage - FIXED MARGIN/PADDING FOR HEADER OVERLAP */}
-      <main className="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center gap-16 pt-32 pb-20" aria-labelledby="vault-heading">
+      <main className="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center gap-10 pt-24 pb-20" aria-labelledby="vault-heading">
         <h2 id="vault-heading" className="sr-only">The Safe Submission Stage</h2>
         
         <AnimatePresence mode="wait">
@@ -229,7 +228,7 @@ export default function PremiumVault() {
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">A Direct Line to My Desk</span>
                 </motion.div>
                 
-                <h1 className="text-5xl font-serif italic text-white tracking-tight leading-[1.1]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h1 className="text-[clamp(2rem,10vw,3rem)] font-serif italic text-white tracking-tight leading-[1.1]" style={{ fontFamily: "'Playfair Display', serif" }}>
                   I am listening. <br/> Tell me what's on your mind.
                 </h1>
 
@@ -249,7 +248,7 @@ export default function PremiumVault() {
                   <div className="h-px flex-grow bg-white/10" />
                 </div>
                 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                    {[
                      { label: "No IP tracking", detail: "I will never log your digital footprint" },
                      { label: "Total Anonymity", detail: "Your identity remains your choice" },
