@@ -267,7 +267,7 @@ export default function PremiumLetter({
         onClick={onSubmit}
         disabled={!canSubmit}
         aria-label="Seal and Send your record to the vault"
-        whileHover={canSubmit ? { scale: 1.02, backgroundColor: 'rgba(255,250,240,0.1)' } : {}}
+        whileHover={canSubmit ? { scale: 1.02 } : {}}
         whileTap={canSubmit ? { scale: 0.98 } : {}}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         className={`px-20 py-6 rounded-full border-2 transition-all text-[13px] font-black tracking-[0.5em] uppercase focus-secondary shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-3 ${
