@@ -7,13 +7,16 @@ async function isAuthorized(request) {
   const db = await getDb();
   const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
   const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2026';
-  return request.headers.get('Authorization') === secret;
+  const authHeader = request.headers.get('Authorization');
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+  return token === secret;
 }
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // GET: Fetch all submissions (protected)
 export async function GET(request) {
+  const start = Date.now();
   if (!(await isAuthorized(request))) {
     await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
