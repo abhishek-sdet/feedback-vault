@@ -16,60 +16,38 @@ async function keepAlive() {
     process.exit(1);
   }
 
-  // Extract hostname from connection string
   const url = new URL(connectionString);
   const hostname = url.hostname;
 
   try {
     console.log('--- Supabase Keep-Alive Heartbeat ---');
     console.log(`Time: ${new Date().toISOString()}`);
-    console.log(`Target Host: ${hostname}`);
+    console.log(`Target: ${hostname}`);
 
-    // Use dns.lookup which is more compatible with OS-level host resolution
-    const records = await new Promise((resolve) => {
-      dns.lookup(hostname, { all: true }, (err, addresses) => {
-        if (err || !addresses.length) {
-          console.warn(`Warning: Standard DNS lookup failed for ${hostname}.`);
-          resolve([]);
-        } else {
-          resolve(addresses);
-        }
+    // Log resolution for debugging
+    const ip = await new Promise((resolve) => {
+      dns.lookup(hostname, (err, address) => {
+        resolve(err ? 'Resolution Failed' : address);
       });
     });
-
-    console.log('Available Records:', JSON.stringify(records));
-    
-    // Prioritize IPv4 but allow fallback
-    const ipv4Record = records.find(r => r.family === 4);
-    let finalConnectionString = connectionString;
-
-    if (ipv4Record) {
-      console.log(`Forcing IPv4: ${ipv4Record.address}`);
-      const targetUrl = new URL(connectionString);
-      targetUrl.hostname = ipv4Record.address;
-      finalConnectionString = targetUrl.toString();
-    } else {
-      console.log('No IPv4 record found. Falling back to original hostname (IPv6 attempted).');
-    }
+    console.log(`Resolved to: ${ip}`);
 
     const pool = new Pool({
-      connectionString: finalConnectionString,
+      connectionString,
       ssl: { rejectUnauthorized: false }
     });
 
-    // Execute a trivial query to keep the project active
+    // Execute query
     const res = await pool.query('SELECT 1 as heartbeat');
     
     if (res.rows[0].heartbeat === 1) {
       console.log('Success: Database heartbeat sent successfully.');
-    } else {
-      console.warn('Warning: Unexpected heartbeat result.');
     }
     await pool.end();
   } catch (error) {
     console.error('Error: Heartbeat failed.', error.message);
     if (error.message.includes('ENETUNREACH')) {
-      console.error('TIP: Your project host may be IPv6-only. Consider using the Supabase Transaction Pooler URL (IPv4) in your secrets.');
+      console.error('CRITICAL: Network unreachable. Ensure you have updated DATABASE_URL to the IPv4 Transaction Pooler URL.');
     }
     process.exit(1);
   }
