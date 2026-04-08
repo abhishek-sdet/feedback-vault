@@ -61,9 +61,9 @@ export default function TrustMessage(props) {
         className="text-[28px] md:text-[36px] leading-tight tracking-tight font-serif"
         style={{
           fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'rgba(255,250,240,0.92)',
+          color: '#0f172a',
           minHeight: '1.6em',
-          fontWeight: 400,
+          fontWeight: 600,
         }}
       >
         {line1}
@@ -81,7 +81,7 @@ export default function TrustMessage(props) {
           className="text-[16px] md:text-[18px] leading-relaxed tracking-[0.3em] uppercase font-bold"
           style={{
             fontFamily: "'Inter', sans-serif",
-            color: 'rgba(255,250,240,0.45)',
+            color: 'rgba(30,27,75,0.3)',
             minHeight: '1.4em',
           }}
         >

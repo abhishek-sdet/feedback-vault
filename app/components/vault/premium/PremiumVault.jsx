@@ -119,10 +119,11 @@ export default function PremiumVault() {
 
   return (
     <div
-      className={`relative min-h-screen flex flex-col items-center bg-[var(--background)] transition-all duration-1000 ${
+      className={`relative min-h-screen flex flex-col items-center transition-all duration-1000 ${
         (phase === 'success' || phase === 'trust') ? 'justify-center pt-0 overflow-hidden' : 'justify-start pt-0 pb-20 overflow-y-auto'
       }`}
     >
+      <div className="mesh-bg" aria-hidden="true" />
       {/* Cinematic Film Grain */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.03] z-[99]"
@@ -135,7 +136,7 @@ export default function PremiumVault() {
         {mounted && [...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-[2px] h-[2px] bg-slate-400/20 rounded-full"
+            className="absolute w-[2px] h-[2px] bg-blue-500/20 rounded-full"
             initial={{ 
               x: Math.random() * 2000 - 1000, 
               y: Math.random() * 2000 - 1000,
@@ -162,10 +163,10 @@ export default function PremiumVault() {
         className="absolute pointer-events-none opacity-[0.1]"
         aria-hidden="true"
         style={{
-          top: '30%', left: '50%',
+          top: '20%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 'min(900px, 150vw)', height: 'min(700px, 120vh)',
-          background: 'radial-gradient(ellipse, rgba(71,85,105,0.2) 0%, transparent 80%)',
+          width: 'min(1000px, 180vw)', height: 'min(800px, 140vh)',
+          background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, rgba(139,92,246,0.1) 40%, transparent 70%)',
         }}
       />
 
@@ -174,18 +175,18 @@ export default function PremiumVault() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="fixed top-0 left-0 right-0 flex justify-between items-center px-10 py-8 z-50 bg-slate-950/20 backdrop-blur-md"
+        className="fixed top-0 left-0 right-0 flex justify-between items-center px-12 py-7 z-50 bg-white/70 backdrop-blur-3xl border-b border-indigo-500/10 shadow-[0_10px_40px_rgba(30,27,75,0.03)]"
         role="navigation"
         aria-label="Primary Vault Navigation"
       >
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
           <img src="/sdet-logo.png" alt="SDET Official Logo" className="h-7 md:h-9 w-auto object-contain" />
-          <div className="h-4 w-px bg-white/20 hidden sm:block" aria-hidden="true" />
-          <span className="font-serif text-[11px] md:text-[15px] text-slate-200 tracking-widest font-medium uppercase hidden sm:block">
-            Open Channel: Your Voice to Kapil
+          <div className="h-4 w-[2px] bg-indigo-600 hidden sm:block" aria-hidden="true" />
+          <span className="font-serif text-[11px] md:text-[16px] text-indigo-950 tracking-[0.25em] font-black uppercase hidden sm:block">
+            Open Channel <span className="text-indigo-600/40 px-2">//</span> Your Voice to Kapil
           </span>
         </div>
-        <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-900/50 border border-white/5" aria-label="System status: Secure Transmission active">
+        <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-50/50 border border-blue-100/50 shadow-sm shadow-blue-500/5" aria-label="System status: Secure Transmission active">
           <div className="w-[8px] h-[8px] rounded-full bg-emerald-400"
             style={{ boxShadow: '0 0 8px rgba(52,211,153,0.5)' }} aria-hidden="true" />
           <span className="font-sans text-[11px] text-emerald-400 font-black tracking-widest uppercase">
@@ -223,52 +224,52 @@ export default function PremiumVault() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-block px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
+                  className="inline-block px-10 py-3 rounded-full border border-indigo-600/20 bg-indigo-600/[0.03] shadow-[0_10px_30px_rgba(37,99,235,0.05)] backdrop-blur-xl"
                 >
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">A Direct Line to My Desk</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-indigo-600">Sovereign Direct Access</span>
                 </motion.div>
                 
-                <h1 className="text-[clamp(2rem,10vw,3rem)] font-serif italic text-white tracking-tight leading-[1.1]" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  I am listening. <br/> Tell me what's on your mind.
+                <h1 className="text-[clamp(3rem,15vw,5rem)] font-serif italic text-gradient tracking-tighter leading-[0.95] pb-8" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  I am listening. <br/> Speak freely.
                 </h1>
 
                 {/* Point 2: CEO Message - Personal Note Tone */}
-                <p className="text-slate-400 text-sm font-light leading-relaxed max-w-lg mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  "I created this space so your voice reaches me directly—without filters or fear.
-                  Whether it's an idea, a question, or a concern, I want to hear it directly from you."
-                  <span className="block mt-4 text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 italic">— My Promise, Kapil</span>
+                <p className="text-indigo-950/70 text-[16px] md:text-[18px] font-light leading-relaxed max-w-xl mx-auto tracking-wide" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  "I personally guarantee that your voice reaches my desk without a single filter. 
+                  Share your truth, and we will build a stronger SDET together."
+                  <span className="block mt-8 text-[11px] uppercase tracking-[0.4em] font-black text-indigo-600/50">— Kapil, Founder</span>
                 </p>
               </div>
 
               {/* Point 1: Trust Assurances - "My 4 Promises" Grid */}
               <div className="w-full max-w-3xl space-y-6">
-                <div className="flex items-center gap-4 px-6">
-                  <div className="h-px flex-grow bg-white/10" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">My 4 Promises to You</span>
-                  <div className="h-px flex-grow bg-white/10" />
+                <div className="flex items-center gap-6 px-12">
+                  <div className="h-[1px] flex-grow bg-slate-100" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-indigo-950/20">The 4 Core Protections</span>
+                  <div className="h-[1px] flex-grow bg-slate-100" />
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                   {[
-                     { label: "No IP tracking", detail: "I will never log your digital footprint" },
-                     { label: "Total Anonymity", detail: "Your identity remains your choice" },
-                     { label: "Direct Access", detail: "Your voice reaches my desk directly" },
-                     { label: "Zero Retaliation", detail: "I guarantee a safe space for honesty" }
-                   ].map((trust, i) => (
-                     <motion.div
-                       key={trust.label}
-                       initial={{ opacity: 0, y: 10 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       transition={{ delay: 0.4 + (i * 0.1) }}
-                       className="p-6 rounded-3xl bg-white/[0.03] border border-white/5 backdrop-blur-3xl hover:bg-white/[0.06] transition-colors group cursor-default"
-                     >
-                       <div className="flex flex-col gap-3">
-                          <div className="w-[8px] h-[8px] rounded-full bg-emerald-500/40 group-hover:bg-emerald-400 transition-colors" />
-                          <h4 className="text-[11px] font-black uppercase tracking-widest text-emerald-400">{trust.label}</h4>
-                          <p className="text-[9px] text-slate-500 leading-tight font-medium tracking-wide">{trust.detail}</p>
-                       </div>
-                     </motion.div>
-                   ))}
+                    {[
+                      { label: "No IP tracking", detail: "I will never log your digital footprint" },
+                      { label: "Total Anonymity", detail: "Your identity remains your choice" },
+                      { label: "Direct Access", detail: "Your voice reaches my desk directly" },
+                      { label: "Zero Retaliation", detail: "I guarantee a safe space for honesty" }
+                    ].map((trust, i) => (
+                      <motion.div
+                        key={trust.label}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 + (i * 0.1) }}
+                        className="p-10 rounded-[2.5rem] bg-white border border-indigo-50 backdrop-blur-3xl transition-all duration-700 group cursor-default shadow-[0_20px_60px_-20px_rgba(30,27,75,0.05)] hover:shadow-[0_60px_100px_-20px_rgba(37,99,235,0.12)] hover:-translate-y-4"
+                      >
+                        <div className="flex flex-col gap-6">
+                           <div className="w-[16px] h-[16px] rounded-full bg-indigo-50 group-hover:bg-indigo-600 transition-all duration-500 shadow-inner group-hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]" />
+                           <h4 className="text-[12px] font-black uppercase tracking-[0.25em] text-indigo-950 group-hover:text-indigo-600 transition-colors">{trust.label}</h4>
+                           <p className="text-[11px] text-slate-500 leading-relaxed font-medium tracking-wide opacity-80">{trust.detail}</p>
+                        </div>
+                      </motion.div>
+                    ))}
                 </div>
               </div>
 

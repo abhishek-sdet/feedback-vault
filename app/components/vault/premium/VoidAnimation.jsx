@@ -24,7 +24,7 @@ export default function VoidAnimation(props) {
       className="fixed inset-0 flex items-center justify-center pointer-events-none"
       initial={{ backgroundColor: 'transparent' }}
       animate={{ 
-        backgroundColor: phase === 'expand' ? '#0b0f19' : 'transparent' 
+        backgroundColor: phase === 'expand' ? '#ffffff' : 'transparent' 
       }}
       transition={{ duration: 1.5 }}
       style={{ zIndex: 100 }}
@@ -102,8 +102,8 @@ export default function VoidAnimation(props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="absolute inset-0 bg-[#0b0f19] pointer-events-none"
-          style={{ mixBlendMode: 'multiply' }}
+          className="absolute inset-0 bg-[#ffffff] pointer-events-none"
+          style={{ mixBlendMode: 'normal' }}
         />
       )}
     </motion.div>

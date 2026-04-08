@@ -27,9 +27,9 @@ export default function SuccessScreen({ onReset }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.8 }}
         style={{ fontFamily: "'Playfair Display', serif" }}
-        className="text-[clamp(1.75rem,8vw,3.75rem)] font-medium mb-8 text-white tracking-tight italic"
+        className="text-[clamp(3.5rem,15vw,6rem)] font-serif font-black mb-12 text-indigo-950 tracking-tighter italic leading-[0.9]"
       >
-        Thank you. <br/> Your voice is in my hands.
+        Your voice <br/> has landed.
       </motion.h1>
 
       <motion.div
@@ -40,7 +40,7 @@ export default function SuccessScreen({ onReset }) {
       >
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-slate-200 text-[clamp(0.95rem,2.5vw,1.25rem)] max-w-2xl font-light leading-relaxed tracking-[0.02em] opacity-80 italic"
+          className="text-indigo-950/60 text-[clamp(1.1rem,4vw,1.5rem)] max-w-3xl font-light leading-relaxed tracking-wide italic"
         >
           "I personally review every entry in this vault. Your honesty is what 
           helps us build a better company together. Take pride in speaking up."
@@ -73,7 +73,7 @@ export default function SuccessScreen({ onReset }) {
         <button
           onClick={onReset}
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="group flex items-center gap-4 px-8 md:px-12 py-3.5 md:py-5 rounded-sm border border-white/10 bg-white/[0.04] text-[11px] md:text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white/[0.1] hover:border-white/40 transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)]"
+          className="group flex items-center gap-8 px-16 py-6 rounded-full border-2 border-indigo-600/10 bg-white shadow-[0_20px_60px_-10px_rgba(30,27,75,0.06)] text-[14px] font-black uppercase tracking-[0.5em] text-indigo-950 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:-translate-y-2 transition-all duration-700 hover:shadow-[0_40px_80px_-15px_rgba(37,99,235,0.25)]"
         >
           <ChevronLeft 
             size={16} 

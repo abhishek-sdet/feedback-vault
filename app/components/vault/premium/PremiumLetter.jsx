@@ -67,10 +67,10 @@ export default function PremiumLetter({
           rotateY: tilt.y,
           scale: isDissolving ? 0.98 : 1,
           boxShadow: isDissolving 
-            ? '0 10px 40px rgba(0,0,0,0.3)' 
+            ? '0 10px 40px rgba(0,0,0,0.1)' 
             : `
-              ${-tilt.y * 2}px ${tilt.x * 2 + 20}px 60px rgba(0,0,0,0.45),
-              0 4px 20px rgba(0,0,0,0.2)
+              ${-tilt.y * 2}px ${tilt.x * 2 + 20}px 60px rgba(0,0,0,0.1),
+              0 4px 20px rgba(0,0,0,0.05)
             `,
         }}
         transition={{ type: 'spring', stiffness: 120, damping: 18 }}
@@ -125,27 +125,33 @@ export default function PremiumLetter({
                 {/* Identity Field */}
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
-                    <div className="flex-grow w-full max-w-sm relative group">
-                      <User size={14} className="absolute left-0 top-1/2 -translate-y-1/2 text-black/40 group-focus-within:text-black/60 transition-colors" />
-                      <label htmlFor="employee-name" className="sr-only">Your Name (Optional)</label>
-                      <input 
-                        id="employee-name"
-                        type="text"
-                        placeholder="Your Name (Optional)"
-                        value={employeeName}
-                        onChange={(e) => onNameChange(e.target.value)}
-                        disabled={isAnonymous}
-                        className={`w-full bg-transparent pl-7 py-2 border-b border-black/10 outline-none font-serif italic text-sm text-black font-bold transition-all placeholder:text-black/20 ${isAnonymous ? 'opacity-10 cursor-not-allowed' : 'focus:border-black/40 opacity-80'}`}
-                      />
-                    </div>
+                    {!isAnonymous && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex-grow w-full max-w-sm relative group"
+                      >
+                        <User size={14} className="absolute left-0 top-1/2 -translate-y-1/2 text-black/40 group-focus-within:text-black/60 transition-colors" />
+                        <label htmlFor="employee-name" className="sr-only">Your Name (Optional)</label>
+                        <input 
+                          id="employee-name"
+                          type="text"
+                          placeholder="Your Name (Optional)"
+                          value={employeeName}
+                          onChange={(e) => onNameChange(e.target.value)}
+                          className="w-full bg-transparent pl-7 py-2 border-b border-black/10 outline-none font-serif italic text-sm text-black font-bold transition-all placeholder:text-black/20 focus:border-black/40 opacity-80"
+                        />
+                      </motion.div>
+                    )}
 
-                    <button 
-                      onClick={() => onAnonymousChange(!isAnonymous)}
-                      role="switch"
-                      aria-checked={isAnonymous}
-                      aria-label="Stay Anonymous"
-                      className="flex items-center gap-3 group shrink-0 focus-secondary rounded-full p-1"
-                    >
+                    <div className={isAnonymous ? "w-full flex justify-end" : ""}>
+                      <button 
+                        onClick={() => onAnonymousChange(!isAnonymous)}
+                        role="switch"
+                        aria-checked={isAnonymous}
+                        aria-label="Stay Anonymous"
+                        className="flex items-center gap-3 group shrink-0 focus-secondary rounded-full p-1"
+                      >
                       <div className={`w-11 h-6 rounded-full relative transition-all duration-500 ease-in-out ${isAnonymous ? 'bg-black' : 'bg-black/10'}`}>
                         <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-500 cubic-bezier(0.68, -0.55, 0.265, 1.55) ${isAnonymous ? 'left-6' : 'left-1'}`} />
                       </div>
@@ -165,8 +171,9 @@ export default function PremiumLetter({
                       </div>
                     </button>
                   </div>
+                </div>
 
-                  {!isAnonymous && (
+                {!isAnonymous && (
                     <motion.div 
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -263,10 +270,10 @@ export default function PremiumLetter({
         whileHover={canSubmit ? { scale: 1.02, backgroundColor: 'rgba(255,250,240,0.1)' } : {}}
         whileTap={canSubmit ? { scale: 0.98 } : {}}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className={`px-12 py-4 rounded-sm border transition-all text-sm font-bold tracking-[0.2em] uppercase focus-secondary ${
+        className={`px-20 py-6 rounded-full border-2 transition-all text-[13px] font-black tracking-[0.5em] uppercase focus-secondary shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-3 ${
           canSubmit 
-            ? 'text-slate-100 border-white/30 cursor-pointer bg-white/5' 
-            : 'text-slate-600 border-white/10 cursor-not-allowed'
+            ? 'text-indigo-950 border-indigo-600/10 cursor-pointer bg-white hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:shadow-[0_40px_80px_-15px_rgba(37,99,235,0.3)]' 
+            : 'text-slate-300 border-slate-100 cursor-not-allowed bg-slate-50 opacity-60'
         }`}
       >
         Speak Freely & Send

@@ -49,14 +49,14 @@ export default function FoldAnimation(props) {
                 fontFamily: "'Playfair Display', Georgia, serif",
                 fontSize: 17,
                 fontStyle: 'italic',
-                color: 'rgba(255,250,240,0.65)',
+                color: 'rgba(30,27,75,0.65)',
                 letterSpacing: '0.04em',
               }}
             >
               Encrypting for Kapil's eyes only…
             </p>
-            <p className="text-[10px] uppercase font-black tracking-[0.2em] text-white/20 animate-pulse">
-              Identity sanitization in progress…
+            <p className="text-[12px] uppercase font-black tracking-[0.4em] text-indigo-600 animate-pulse">
+              Identity Sanitization in Progress…
             </p>
           </motion.div>
         )}
@@ -89,17 +89,17 @@ export default function FoldAnimation(props) {
           >
             {/* The Monolith Face */}
               <div 
-                className="w-full h-full rounded-t-2xl border-t border-x border-white/20 relative overflow-hidden"
+                className="w-full h-full rounded-t-3xl border-t border-x border-white relative overflow-hidden"
                 style={{
-                  background: 'linear-gradient(180deg, #1f2229 0%, #08090b 100%)',
-                  boxShadow: '0 -30px 80px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1)',
+                  background: 'linear-gradient(180deg, #f8fafc 0%, #94a3b8 100%)',
+                  boxShadow: '0 -50px 100px rgba(37,99,235,0.15), inset 0 2px 4px rgba(255,255,255,1)',
                 }}
               >
                 {/* Internal glow for the slot area */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-emerald-500/10 blur-[60px] rounded-full" />
                 
                 {/* The Slot */}
-                <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[160px] h-[12px] bg-black rounded-full shadow-[inset_0_4px_12px_rgba(0,0,0,1)] border border-white/10 flex items-center justify-center">
+                <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[180px] h-[16px] bg-white rounded-full shadow-[inset_0_4px_20px_rgba(0,0,0,0.1)] border-2 border-indigo-100 flex items-center justify-center">
                   <motion.div 
                     animate={{ 
                       opacity: [0.2, 0.4, 0.2],
@@ -116,11 +116,11 @@ export default function FoldAnimation(props) {
 
                 {/* Branding / Serial */}
                 <div className="absolute bottom-40 left-0 right-0 flex flex-col items-center opacity-60 group">
-                  <span className="text-[10px] uppercase tracking-[0.5em] text-white font-black drop-shadow-lg">
+                  <span className="text-[11px] uppercase tracking-[0.6em] text-indigo-950 font-black drop-shadow-sm">
                     Sovereign Vault
                   </span>
-                  <div className="h-px w-8 bg-white/20 my-2" />
-                  <span className="text-[8px] text-white/40 tracking-[0.3em] font-mono font-bold">
+                  <div className="h-px w-8 bg-blue-900/10 my-2" />
+                  <span className="text-[8px] text-blue-900/30 tracking-[0.3em] font-mono font-bold">
                     NODE-SDET-INITIATIVE-01
                   </span>
                 </div>

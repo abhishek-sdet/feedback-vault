@@ -38,7 +38,7 @@ export default function PremiumEnvelope(props) {
         transition={{ delay: 0.5 }}
         style={{
           fontFamily: "'Playfair Display', Georgia, serif",
-          color: 'rgba(255,250,240,0.4)',
+          color: 'rgba(30,27,75,0.45)',
           fontSize: 13,
           letterSpacing: '0.18em',
           textTransform: 'uppercase',
@@ -142,7 +142,7 @@ export default function PremiumEnvelope(props) {
         transition={{ delay: 0.8 }}
         style={{
           fontFamily: "'Inter', sans-serif",
-          color: 'rgba(255,250,240,0.28)',
+          color: 'rgba(30,27,75,0.3)',
           fontSize: 12,
           letterSpacing: '0.1em',
         }}

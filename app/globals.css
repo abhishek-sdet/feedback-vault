@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617; /* Deep Navy - Better Contrast */
-  --foreground: #f8fafc; /* Slate 50 - High Legibility */
+  --background: #ffffff;
+  --foreground: #0f172a;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+html, body {
+  background-color: #ffffff !important;
+  color: #0f172a;
   overflow-x: hidden;
   font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+@keyframes mesh {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.08) 0, transparent 50%),
+    #ffffff;
+  background-size: 100% 100%;
+  animation: mesh 25s ease infinite alternate;
 }
 
 /* Premium High Contrast Glass */
 .glass-card {
-  background: rgba(15, 23, 42, 0.7); /* Deep Slate */
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.15); /* Top Highlight */
+  background: rgba(255, 255, 255, 0.4); 
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 
-    0 15px 45px -10px rgba(0, 0, 0, 0.6),
-    0 5px 15px -5px rgba(0, 0, 0, 0.4);
+    0 4px 6px -1px rgba(0, 0, 0, 0.01),
+    0 20px 25px -5px rgba(0, 0, 0, 0.02),
+    0 100px 80px -50px rgba(30, 27, 75, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .focus-secondary {
@@ -28,14 +59,15 @@ body {
 }
 
 .focus-secondary:focus {
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 1), 0 0 0 4px rgba(16, 185, 129, 0.5); /* Emerald focus ring */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 1), 0 0 0 4px rgba(37, 99, 235, 0.4); 
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #fff 0%, #6fa3ef 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2563eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(30, 27, 75, 0.1));
 }
 
 /* Custom Animations */
