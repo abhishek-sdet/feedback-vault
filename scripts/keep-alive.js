@@ -1,4 +1,11 @@
 const { Pool } = require('pg');
+const dns = require('dns');
+
+// Force IPv4 as GitHub Actions often has issues with IPv6 resolution (ENETUNREACH)
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
+
 require('dotenv').config();
 
 async function keepAlive() {
