@@ -16,7 +16,7 @@ async function keepAlive() {
     process.exit(1);
   }
 
-  // Extract hostname from connection string to force IPv4 resolution
+  // Extract hostname from connection string
   const url = new URL(connectionString);
   const hostname = url.hostname;
 
@@ -25,22 +25,35 @@ async function keepAlive() {
     console.log(`Time: ${new Date().toISOString()}`);
     console.log(`Target Host: ${hostname}`);
 
-    // Manually resolve to IPv4 to bypass GitHub Actions IPv6 issues
-    const ipv4 = await new Promise((resolve, reject) => {
-      dns.resolve4(hostname, (err, addresses) => {
-        if (err || !addresses.length) reject(new Error(`Failed to resolve ${hostname} to IPv4`));
-        else resolve(addresses[0]);
+    // Use dns.lookup which is more compatible with OS-level host resolution
+    const records = await new Promise((resolve) => {
+      dns.lookup(hostname, { all: true }, (err, addresses) => {
+        if (err || !addresses.length) {
+          console.warn(`Warning: Standard DNS lookup failed for ${hostname}.`);
+          resolve([]);
+        } else {
+          resolve(addresses);
+        }
       });
     });
 
-    console.log(`Resolved IPv4: ${ipv4}`);
+    console.log('Available Records:', JSON.stringify(records));
     
-    // Create new modified connection string with IP
-    const targetUrl = new URL(connectionString);
-    targetUrl.hostname = ipv4;
+    // Prioritize IPv4 but allow fallback
+    const ipv4Record = records.find(r => r.family === 4);
+    let finalConnectionString = connectionString;
+
+    if (ipv4Record) {
+      console.log(`Forcing IPv4: ${ipv4Record.address}`);
+      const targetUrl = new URL(connectionString);
+      targetUrl.hostname = ipv4Record.address;
+      finalConnectionString = targetUrl.toString();
+    } else {
+      console.log('No IPv4 record found. Falling back to original hostname (IPv6 attempted).');
+    }
 
     const pool = new Pool({
-      connectionString: targetUrl.toString(),
+      connectionString: finalConnectionString,
       ssl: { rejectUnauthorized: false }
     });
 
@@ -48,13 +61,16 @@ async function keepAlive() {
     const res = await pool.query('SELECT 1 as heartbeat');
     
     if (res.rows[0].heartbeat === 1) {
-      console.log('Success: Database heartbeat sent successfully via IPv4.');
+      console.log('Success: Database heartbeat sent successfully.');
     } else {
       console.warn('Warning: Unexpected heartbeat result.');
     }
     await pool.end();
   } catch (error) {
     console.error('Error: Heartbeat failed.', error.message);
+    if (error.message.includes('ENETUNREACH')) {
+      console.error('TIP: Your project host may be IPv6-only. Consider using the Supabase Transaction Pooler URL (IPv4) in your secrets.');
+    }
     process.exit(1);
   }
 }
