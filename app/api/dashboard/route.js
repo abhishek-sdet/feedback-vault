@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '../../../lib/db.cjs';
 import { decrypt } from '../../../lib/crypto';
+import { supabase } from '../../../lib/supabase';
 
 async function isAuthorized(request) {
   const db = await getDb();
@@ -14,7 +15,6 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // GET: Fetch all submissions (protected)
 export async function GET(request) {
   if (!(await isAuthorized(request))) {
-    // Brute-force protection: slow down failed attempts
     await sleep(1000);
     return NextResponse.json({ error: 'Unauthorized Vault Access' }, { status: 401 });
   }
@@ -28,12 +28,26 @@ export async function GET(request) {
       )
       .all();
     
-    // Decrypt sensitive fields for the dashboard
-    const submissions = rows.map(row => ({
-      ...row,
-      employee_name: row.is_anonymous ? null : decrypt(row.employee_name),
-      employee_email: row.is_anonymous ? null : decrypt(row.employee_email),
-      employee_phone: row.is_anonymous ? null : decrypt(row.employee_phone),
+    // Generate Signed URLs for attachments and decrypt fields
+    const submissions = await Promise.all(rows.map(async (row) => {
+      const getSignedUrl = async (path) => {
+        if (!path) return null;
+        const { data, error } = await supabase.storage
+          .from('vault_attachments')
+          .createSignedUrl(path, 3600); // 1 hour expiry
+        return error ? null : data.signedUrl;
+      };
+
+      return {
+        ...row,
+        content: decrypt(row.content),
+        employee_name: row.is_anonymous ? null : decrypt(row.employee_name),
+        employee_email: row.is_anonymous ? null : decrypt(row.employee_email),
+        employee_phone: row.is_anonymous ? null : decrypt(row.employee_phone),
+        image_url: await getSignedUrl(row.image_url),
+        video_url: await getSignedUrl(row.video_url),
+        file_url: await getSignedUrl(row.file_url),
+      };
     }));
 
     return NextResponse.json(submissions);
@@ -69,6 +83,9 @@ export async function DELETE(request) {
   try {
     const { id } = await request.json();
     const db = await getDb();
+    
+    // Optional: Also delete files from Supabase Storage here if needed
+    
     await db.prepare('DELETE FROM Submission WHERE id = ?').run(id);
     return NextResponse.json({ success: true, message: 'Entry permanently removed from vault' });
   } catch (error) {
