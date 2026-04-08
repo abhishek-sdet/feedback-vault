@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db.cjs';
 async function isAuthorized(request) {
   const db = await getDb();
   const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
-  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2024';
+  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2026';
   return request.headers.get('Authorization') === secret;
 }
 
@@ -18,7 +18,7 @@ export async function GET(request) {
   const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
   
   return NextResponse.json({ 
-    accessKey: res?.value || 'Sdet@2024'
+    accessKey: res?.value || 'Sdet@2026'
   });
 }
 

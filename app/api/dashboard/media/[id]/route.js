@@ -6,7 +6,7 @@ import path from 'path';
 async function isAuthorized(request) {
   const db = await getDb();
   const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
-  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2024';
+  const secret = res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2026';
   return request.headers.get('Authorization') === secret;
 }
 
