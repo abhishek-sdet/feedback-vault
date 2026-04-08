@@ -11,6 +11,11 @@ html, body {
   overflow-x: hidden;
   font-family: 'Inter', sans-serif;
   position: relative;
+  zoom: 80%; /* Modern browsers */
+  -moz-transform: scale(0.8); /* Firefox support */
+  -moz-transform-origin: top center;
+  transform: scale(0.8);
+  transform-origin: top center;
 }
 
 @keyframes mesh {

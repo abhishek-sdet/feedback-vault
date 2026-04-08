@@ -16,34 +16,46 @@ async function keepAlive() {
     process.exit(1);
   }
 
-  // Only run for Postgres connections
-  if (!connectionString.startsWith('postgres://') && !connectionString.startsWith('postgresql://')) {
-    console.log('Skipping keep-alive: Not a Postgres connection.');
-    return;
-  }
-
-  const pool = new Pool({
-    connectionString,
-    ssl: { rejectUnauthorized: false }
-  });
+  // Extract hostname from connection string to force IPv4 resolution
+  const url = new URL(connectionString);
+  const hostname = url.hostname;
 
   try {
     console.log('--- Supabase Keep-Alive Heartbeat ---');
     console.log(`Time: ${new Date().toISOString()}`);
+    console.log(`Target Host: ${hostname}`);
+
+    // Manually resolve to IPv4 to bypass GitHub Actions IPv6 issues
+    const ipv4 = await new Promise((resolve, reject) => {
+      dns.resolve4(hostname, (err, addresses) => {
+        if (err || !addresses.length) reject(new Error(`Failed to resolve ${hostname} to IPv4`));
+        else resolve(addresses[0]);
+      });
+    });
+
+    console.log(`Resolved IPv4: ${ipv4}`);
     
+    // Create new modified connection string with IP
+    const targetUrl = new URL(connectionString);
+    targetUrl.hostname = ipv4;
+
+    const pool = new Pool({
+      connectionString: targetUrl.toString(),
+      ssl: { rejectUnauthorized: false }
+    });
+
     // Execute a trivial query to keep the project active
     const res = await pool.query('SELECT 1 as heartbeat');
     
     if (res.rows[0].heartbeat === 1) {
-      console.log('Success: Database heartbeat sent successfully.');
+      console.log('Success: Database heartbeat sent successfully via IPv4.');
     } else {
       console.warn('Warning: Unexpected heartbeat result.');
     }
+    await pool.end();
   } catch (error) {
     console.error('Error: Heartbeat failed.', error.message);
     process.exit(1);
-  } finally {
-    await pool.end();
   }
 }
 

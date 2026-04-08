@@ -8,7 +8,7 @@ import StatsStrip from "../components/dashboard/StatsStrip";
 import MessageStream from "../components/dashboard/MessageStream";
 import MessageDetail from "../components/dashboard/MessageDetail";
 import SettingsModal from "../components/dashboard/SettingsModal";
-import { RefreshCcw, Unlock, X, Bell, Zap, Trash2 } from 'lucide-react';
+import { RefreshCcw, Unlock, X, Bell, Zap, Trash2, Eye, EyeOff } from 'lucide-react';
 
 const C = {
   bg: '#0b0f19',
@@ -19,6 +19,7 @@ const C = {
 // ─── Login Guard ──────────────────────────────────────────────────
 function DashboardLogin({ onUnlock }) {
   const [key, setKey] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -55,15 +56,25 @@ function DashboardLogin({ onUnlock }) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <label htmlFor="access-key" className="sr-only">Access Key</label>
-          <input
-            id="access-key"
-            type="password"
-            placeholder="Access Key"
-            value={key}
-            onChange={e => setKey(e.target.value)}
-            aria-describedby={error ? "login-error" : undefined}
-            className="w-full bg-black/5 border-b border-black/10 py-4 px-4 outline-none focus:border-black/30 text-black font-serif italic"
-          />
+          <div className="relative group">
+            <input
+              id="access-key"
+              type={showPassword ? "text" : "password"}
+              placeholder="Access Key"
+              value={key}
+              onChange={e => setKey(e.target.value)}
+              aria-describedby={error ? "login-error" : undefined}
+              className="w-full bg-black/5 border-b border-black/10 py-4 pl-4 pr-12 outline-none focus:border-black/30 text-black font-serif italic transition-all"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-black/20 hover:text-black/50 transition-colors"
+              aria-label={showPassword ? "Hide access key" : "Show access key"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
           {error && <p id="login-error" className="text-red-600 text-[10px] uppercase font-bold tracking-widest text-center" role="alert">{error}</p>}
           <button
             className="w-full py-4 bg-black text-white text-[11px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3"
@@ -199,7 +210,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white px-8 md:px-16 py-12 selection:bg-emerald-500/20">
+    <div className="min-h-screen bg-[#ffffff] text-slate-900 px-8 md:px-16 py-12 selection:bg-emerald-500/10">
       
       {/* --- Deletion Confirmation System --- */}
       <AnimatePresence>
@@ -210,7 +221,7 @@ export default function DashboardPage() {
             exit={{ opacity: 0, scale: 0.9 }}
             className="fixed bottom-12 right-12 z-[100] w-full max-w-sm pointer-events-auto"
           >
-            <div className="bg-slate-950/80 border border-red-500/30 backdrop-blur-3xl p-6 rounded-2xl shadow-[0_20px_80px_rgba(239,68,68,0.2)] overflow-hidden relative">
+            <div className="bg-white border border-red-100 backdrop-blur-3xl p-6 rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.1)] overflow-hidden relative">
                <motion.div 
                  className="absolute inset-x-0 top-0 h-[2px] bg-red-500"
                  initial={{ width: '100%' }}
@@ -219,19 +230,19 @@ export default function DashboardPage() {
                />
                
                <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                  <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center border border-red-100">
                     <Trash2 className="w-5 h-5 text-red-500" />
                   </div>
                   <div className="flex-1">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-red-400 mb-1">Security Lockdown</h4>
-                    <p className="text-[13px] text-white/90 font-medium tracking-tight leading-snug">
-                      Vault entry <span className="text-red-400 font-bold">{deleteAlert.feedbackId}</span> has been wiped.
+                    <p className="text-[13px] text-slate-900 font-medium tracking-tight leading-snug">
+                      Vault entry <span className="text-red-600 font-bold">{deleteAlert.feedbackId}</span> has been wiped.
                     </p>
-                    <p className="text-[9px] text-white/30 font-bold uppercase tracking-widest mt-2">Protocol: Secure Purge Complete</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-2">Protocol: Secure Purge Complete</p>
                   </div>
                   <button 
                     onClick={() => setDeleteAlert(null)}
-                    className="text-white/20 hover:text-white transition-colors"
+                    className="text-slate-300 hover:text-slate-900 transition-colors"
                   >
                     <X size={16} />
                   </button>
@@ -246,7 +257,10 @@ export default function DashboardPage() {
         onSettings={() => setIsSettingsOpen(true)}
         unreadCount={stats.unread}
         unreadItems={data.filter(d => d.status === 'UNREAD').slice(0, 8)}
-        onSelectMessage={setSelected}
+        onSelectMessage={(msg) => {
+          setSelected(msg);
+          if (msg.status === 'UNREAD') updateEntry(msg.id, 'READ');
+        }}
       />
 
       <motion.div
@@ -258,10 +272,10 @@ export default function DashboardPage() {
         <VaultCore />
         
         <div className="mb-20 text-center">
-          <h1 className="text-6xl font-medium tracking-tight italic mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h1 className="text-6xl font-medium tracking-tight italic mb-4 text-black" style={{ fontFamily: "'Playfair Display', serif" }}>
             The Records
           </h1>
-          <p className="text-[10px] tracking-[0.5em] font-bold text-white/20 uppercase">Archived Payloads Found</p>
+          <p className="text-[10px] tracking-[0.5em] font-black text-slate-200 uppercase">Archived Payloads Found</p>
         </div>
 
         <StatsStrip 
@@ -277,7 +291,10 @@ export default function DashboardPage() {
         ) : (
           <MessageStream
             messages={data}
-            onSelect={setSelected}
+            onSelect={(msg) => {
+              setSelected(msg);
+              if (msg.status === 'UNREAD') updateEntry(msg.id, 'READ');
+            }}
             onUpdate={updateEntry}
             onDelete={deleteEntry}
           />

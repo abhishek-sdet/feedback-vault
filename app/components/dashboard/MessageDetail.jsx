@@ -8,7 +8,7 @@ export default function MessageDetail({ message, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
+      <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 md:p-12">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -37,6 +37,7 @@ export default function MessageDetail({ message, onClose }) {
                    <Calendar size={12} strokeWidth={3} />
                    <span className="text-[10px] uppercase tracking-[0.2em] font-black">
                      {new Date(message.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                     <span className="text-black/20 ml-3">{new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                    </span>
                  </div>
                  <div className="flex items-center gap-3">
