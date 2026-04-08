@@ -50,10 +50,17 @@ export async function GET(request) {
       };
     }));
 
+    const end = Date.now();
+    console.log(`[Dashboard] Fetch successful in ${end - start}ms`);
+
     return NextResponse.json(submissions);
   } catch (error) {
-    console.error('Fetch error:', error);
-    return NextResponse.json({ error: 'Vault retrieval failed' }, { status: 500 });
+    console.error('[Dashboard Error]:', error);
+    return NextResponse.json({ 
+      error: 'Vault retrieval failed', 
+      details: error.message,
+      code: error.code
+    }, { status: 500 });
   }
 }
 

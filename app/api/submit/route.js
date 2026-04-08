@@ -103,7 +103,11 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, message: 'Message securely moved to the vault' }, { status: 201 });
   } catch (error) {
-    console.error('Submission error:', error);
-    return NextResponse.json({ error: 'Vault transmission failed' }, { status: 500 });
+    console.error('[Submission Error]:', error);
+    return NextResponse.json({ 
+      error: 'Vault transmission failed', 
+      details: error.message,
+      code: error.code
+    }, { status: 500 });
   }
 }
