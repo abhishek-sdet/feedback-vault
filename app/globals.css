@@ -6,13 +6,7 @@
 }
 
 html {
-  zoom: 80% !important; /* modern browsers */
-  -moz-transform: scale(0.8) !important; /* Firefox */
-  -moz-transform-origin: top center !important;
-  transform: scale(0.8) !important;
-  transform-origin: top center !important;
-  height: 125%; /* Compensate for scale to prevent white space at bottom */
-  width: 125%;
+  scroll-behavior: smooth;
 }
 
 body {
