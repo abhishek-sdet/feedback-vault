@@ -27,6 +27,7 @@ async function keepAlive() {
     console.log(`User: ${url.username}`);
     console.log(`Database: ${url.pathname.split('/')[1] || 'postgres'}`);
     console.log(`Password: ${url.password ? '****' + url.password.slice(-3) : 'Not Set'}`);
+    console.log(`Password Length: ${url.password ? url.password.length : 0}`);
 
     // Log resolution for debugging
     const ip = await new Promise((resolve) => {
