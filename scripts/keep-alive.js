@@ -43,18 +43,9 @@ async function keepAlive() {
     let poolConfig;
     if (connectionParts) {
       const [_, user, password, host, port, database] = connectionParts;
-      console.log("Using manual parse for robust '@' handling");
+      console.log("Using manual parse for robust connection handling");
       
       const decodedPassword = decodeURIComponent(password);
-      if (decodedPassword.length === 17 && !decodedPassword.includes('@')) {
-        console.warn('---------------------------------------------------------');
-        console.warn('⚠️ CRITICAL ERROR: YOUR PASSWORD IS MISSING THE "@" SYMBOL');
-        console.warn('Expected: abhishekjohri@3980 (18 chars)');
-        console.log(`Found: ${decodedPassword.slice(0, 13)}... (17 chars)`);
-        console.warn('Please update your GitHub Secret: DATABASE_URL');
-        console.warn('---------------------------------------------------------');
-      }
-
       poolConfig = {
         user,
         password: decodedPassword,
