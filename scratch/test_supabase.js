@@ -1,5 +1,13 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+
+// Try to load .env.local first, then .env
+if (fs.existsSync('.env.local')) {
+  require('dotenv').config({ path: '.env.local' });
+} else {
+  require('dotenv').config();
+}
 
 /**
  * TEST SUPABASE CONNECTION
