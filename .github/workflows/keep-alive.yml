@@ -24,6 +24,7 @@ jobs:
       - name: Run keep-alive script
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
         run: node scripts/keep-alive.js
 
       - name: Trigger HTTP heartbeat

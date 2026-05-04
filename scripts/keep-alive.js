@@ -9,7 +9,7 @@ if (dns.setDefaultResultOrder) {
 require('dotenv').config();
 
 async function keepAlive() {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = (process.env.DATABASE_URL || process.env.SUPABASE_DATABASE_URL)?.trim();
 
   if (!connectionString) {
     console.error('Error: DATABASE_URL is not set.');
@@ -37,11 +37,7 @@ async function keepAlive() {
     console.log(`Resolved to: ${ip}`);
 
     const pool = new Pool({
-      user: url.username,
-      password: decodeURIComponent(url.password),
-      host: url.hostname,
-      port: url.port || 5432,
-      database: url.pathname.split('/')[1],
+      connectionString,
       connectionTimeoutMillis: 15000,
       ssl: { 
         rejectUnauthorized: false,
