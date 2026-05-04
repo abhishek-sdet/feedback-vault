@@ -36,8 +36,33 @@ async function keepAlive() {
     });
     console.log(`Resolved to: ${ip}`);
 
+    // Manual parsing to handle multiple '@' symbols robustly
+    const connectionParts = connectionString.match(/postgresql?:\/\/(.*?):(.*)@(.*?):(\d+)\/(.*)/);
+    
+    let poolConfig;
+    if (connectionParts) {
+      const [_, user, password, host, port, database] = connectionParts;
+      console.log("Using manual parse for robust '@' handling");
+      poolConfig = {
+        user,
+        password: decodeURIComponent(password),
+        host,
+        port: parseInt(port),
+        database,
+      };
+    } else {
+      console.log('Using standard URL parse');
+      poolConfig = {
+        user: url.username,
+        password: decodeURIComponent(url.password),
+        host: url.hostname,
+        port: url.port || 5432,
+        database: url.pathname.split('/')[1] || 'postgres',
+      };
+    }
+
     const pool = new Pool({
-      connectionString,
+      ...poolConfig,
       connectionTimeoutMillis: 15000,
       ssl: { 
         rejectUnauthorized: false,
