@@ -3,7 +3,7 @@ name: Supabase Keep-Alive
 on:
   schedule:
     # Run every Sunday at UTC 00:00
-    - cron: '0 0 * * 0'
+    - cron: '0 0 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -25,3 +25,14 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node scripts/keep-alive.js
+
+      - name: Trigger HTTP heartbeat
+        env:
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
+        run: |
+          if [ -n "$DEPLOYMENT_URL" ]; then
+            echo "Triggering HTTP heartbeat to $DEPLOYMENT_URL/api/test"
+            curl -f "$DEPLOYMENT_URL/api/test" || echo "HTTP Heartbeat failed, but continuing..."
+          else
+            echo "DEPLOYMENT_URL not set, skipping HTTP heartbeat."
+          fi

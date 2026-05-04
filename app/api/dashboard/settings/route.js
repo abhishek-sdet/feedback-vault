@@ -18,7 +18,7 @@ export async function GET(request) {
   const res = await db.prepare("SELECT value FROM Registry WHERE key = 'DASHBOARD_SECRET'").get();
   
   return NextResponse.json({ 
-    accessKey: res?.value || 'Sdet@2026'
+    accessKey: res?.value || process.env.DASHBOARD_SECRET || 'Sdet@2026'
   });
 }
 
