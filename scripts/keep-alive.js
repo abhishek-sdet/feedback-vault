@@ -50,7 +50,7 @@ async function keepAlive() {
         user,
         password: decodedPassword,
         host,
-        port: 5432, // Switched to Session Mode for stability
+        port: parseInt(port), // Use the port from the connection string (6543)
         database,
       };
     } else {
