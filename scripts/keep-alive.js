@@ -24,6 +24,9 @@ async function keepAlive() {
     console.log(`Time: ${new Date().toISOString()}`);
     console.log(`Target: ${hostname}`);
     console.log(`Port: ${url.port || '5432'}`);
+    console.log(`User: ${url.username}`);
+    console.log(`Database: ${url.pathname.split('/')[1] || 'postgres'}`);
+    console.log(`Password: ${url.password ? '****' + url.password.slice(-3) : 'Not Set'}`);
 
     // Log resolution for debugging
     const ip = await new Promise((resolve) => {
@@ -34,8 +37,12 @@ async function keepAlive() {
     console.log(`Resolved to: ${ip}`);
 
     const pool = new Pool({
-      connectionString,
-      connectionTimeoutMillis: 15000, // Wait up to 15s to connect
+      user: url.username,
+      password: decodeURIComponent(url.password),
+      host: url.hostname,
+      port: url.port || 5432,
+      database: url.pathname.split('/')[1],
+      connectionTimeoutMillis: 15000,
       ssl: { 
         rejectUnauthorized: false,
         require: true 
