@@ -3,7 +3,7 @@ name: Supabase Keep-Alive
 on:
   schedule:
     # Run every Sunday at UTC 00:00
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 0'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
