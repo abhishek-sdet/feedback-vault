@@ -241,37 +241,7 @@ export default function PremiumVault() {
                 </p>
               </div>
 
-              {/* Point 1: Trust Assurances - "My 4 Promises" Grid */}
-              <div className="w-full max-w-3xl space-y-6">
-                <div className="flex items-center gap-6 px-12">
-                  <div className="h-[1px] flex-grow bg-slate-100" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-indigo-950/20">The 4 Core Protections</span>
-                  <div className="h-[1px] flex-grow bg-slate-100" />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                    {[
-                      { label: "No IP tracking", detail: "I will never log your digital footprint" },
-                      { label: "Total Anonymity", detail: "Your identity remains your choice" },
-                      { label: "Direct Access", detail: "Your voice reaches my desk directly" },
-                      { label: "Zero Retaliation", detail: "I guarantee a safe space for honesty" }
-                    ].map((trust, i) => (
-                      <motion.div
-                        key={trust.label}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 + (i * 0.1) }}
-                        className="p-10 rounded-[2.5rem] bg-white border border-indigo-50 backdrop-blur-3xl transition-all duration-700 group cursor-default shadow-[0_20px_60px_-20px_rgba(30,27,75,0.05)] hover:shadow-[0_60px_100px_-20px_rgba(37,99,235,0.12)] hover:-translate-y-4"
-                      >
-                        <div className="flex flex-col gap-6">
-                           <div className="w-[16px] h-[16px] rounded-full bg-indigo-50 group-hover:bg-indigo-600 transition-all duration-500 shadow-inner group-hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]" />
-                           <h4 className="text-[12px] font-black uppercase tracking-[0.25em] text-indigo-950 group-hover:text-indigo-600 transition-colors">{trust.label}</h4>
-                           <p className="text-[11px] text-slate-500 leading-relaxed font-medium tracking-wide opacity-80">{trust.detail}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                </div>
-              </div>
+
 
                 <div 
                   className="flex flex-col items-center gap-6 mt-12 w-full max-w-sm"
