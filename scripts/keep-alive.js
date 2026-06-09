@@ -37,8 +37,27 @@ async function keepAlive() {
     });
     console.log(`Resolved to: ${ip}`);
 
-    // Manual parsing to handle multiple '@' symbols robustly
-    const connectionParts = connectionString.match(/postgresql?:\/\/(.*?):(.*)@(.*?):(\d+)\/(.*)/);
+    // Wake up via REST API if possible (Supabase connection pooler doesn't wake sleeping dbs)
+    let tenant = null;
+    if (url.username && url.username.includes('.')) {
+      tenant = url.username.split('.').pop();
+    } else if (hostname.includes('supabase.co') && !hostname.includes('pooler')) {
+      tenant = hostname.split('.')[0].replace('db', '');
+    }
+
+    if (tenant) {
+      console.log(`Pinging REST API to wake up project: ${tenant}`);
+      try {
+        await fetch(`https://${tenant}.supabase.co/rest/v1/`, { method: 'GET' });
+        console.log('REST ping sent. Waiting 5s for DB to wake up...');
+        await new Promise(r => setTimeout(r, 5000));
+      } catch (e) {
+        console.log(`REST ping failed: ${e.message}`);
+      }
+    }
+
+    // Manual parsing to handle multiple '@' symbols robustly, excluding query params from db name
+    const connectionParts = connectionString.match(/postgresql?:\/\/(.*?):(.*)@(.*?):(\d+)\/([^?]*)/);
     
     let poolConfig;
     if (connectionParts) {
